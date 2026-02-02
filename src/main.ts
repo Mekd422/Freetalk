@@ -3,6 +3,7 @@ import { json, urlencoded } from 'body-parser';
 import * as dotenv from 'dotenv';
 import cors from 'cors';
 import mongoose from 'mongoose';
+import cookieSession from 'cookie-session';
 import { newPostRouter } from '../routes/post/new';
 import { showPostRouter } from '../routes/post/show';
 import { updatePostRouter } from '../routes/post/update';
@@ -20,9 +21,13 @@ app.use(cors({
     origin: '*',
     optionsSuccessStatus: 200
 }))
-
-app.use(urlencoded({ extended: true }));
+app.set('trust proxy', true);
+app.use(urlencoded({ extended: false }));
 app.use(json());
+app.use(cookieSession({
+    signed: false,
+    secure: false,
+}));
 
 
 const start = async () => {
