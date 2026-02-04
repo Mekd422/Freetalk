@@ -14,6 +14,7 @@ import { signinRouter } from '../routes/auth/signin';
 import { signoutRouter } from '../routes/auth/signout';
 import { signupRouter } from '../routes/auth/signup';
 import { currentUser, requireAuth } from '../common';
+import { currentUserRouter } from '../routes/auth/current-user';
 
 
 dotenv.config();
@@ -34,6 +35,11 @@ app.use(cookieSession({
 }));
 
 app.use(currentUser);
+
+app.use(signinRouter);
+app.use(signoutRouter);
+app.use(signupRouter);
+app.use(currentUserRouter);
 
 app.use(requireAuth,newPostRouter);
 app.use(showPostRouter);
