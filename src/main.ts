@@ -16,6 +16,8 @@ import { signupRouter } from '../routes/auth/signup';
 import { currentUser, requireAuth } from '../common';
 import { currentUserRouter } from '../routes/auth/current-user';
 import { errorHandler, NotFoundError } from '../common';
+import { deleteImagesRouter } from '../routes/post/delete-images';
+import { addImagesRouter } from '../routes/post/add-images';
 
 
 dotenv.config();
@@ -46,6 +48,9 @@ app.use(requireAuth,newPostRouter);
 app.use(showPostRouter);
 app.use(requireAuth,updatePostRouter);
 app.use(requireAuth,deletePostRouter);
+
+app.use(requireAuth,addImagesRouter);
+app.use(requireAuth,deleteImagesRouter);
 
 app.use(requireAuth,newCommentRouter);
 app.use(requireAuth,deleteCommentRouter);
