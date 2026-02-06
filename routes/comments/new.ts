@@ -14,7 +14,7 @@ router.post('/api/comments/new/:postId', async (req: Request, res: Response, nex
 		
 	}
 
-	const newComment = new Comment({
+	const newComment = Comment.build({
 		userName: userName ? userName : 'Anonymous',
 		content
 	})

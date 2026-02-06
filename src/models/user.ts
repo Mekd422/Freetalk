@@ -1,5 +1,21 @@
+import { postDoc } from "./post";
 import { authenticationService } from "../../common";
 import mongoose from "mongoose";
+
+export interface userDoc extends mongoose.Document{
+    email: string,
+    password: string,
+    posts?: Array<postDoc>
+}
+
+export interface CreateUserDto{
+    email: string,
+    password: string
+}
+
+export interface UserModel extends mongoose.Model<userDoc>{
+    build(dto: CreateUserDto): userDoc
+}
 
 const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
@@ -16,7 +32,8 @@ userSchema.pre("save", async function(done){
     done()
 })
 
-const User = mongoose.model("User", userSchema);
-export default User;
+userSchema.statics.build = ( createUserDto: CreateUserDto) => {
+    return new User(createUserDto);
+}
 
- 
+export const User = mongoose.model<userDoc, UserModel>('User', userSchema); 

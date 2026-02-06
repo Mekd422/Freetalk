@@ -18,9 +18,10 @@ router.delete('/api/comments/:commentId/delete/:postId', async (req: Request, re
 		next(new Error('Error deleting comment'));
 	}
 
-	await Post.findOneAndUpdate({_id: postId}, { $pull: { comments: commentId } });
+	const post = await Post.findOneAndUpdate({_id: postId}, { $pull: { comments: commentId } }, {new: true});
 
-	res.status(200).json({success: true});
+	if(!post) return next(new Error());
+	res.status(200).send(post);
 });
 
 export { router as deleteCommentRouter };

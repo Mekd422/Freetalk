@@ -1,5 +1,5 @@
 import { Router, Request, Response, NextFunction } from "express";
-import User from "../../src/models/user";
+import {User} from "../../src/models/user";
 import jwt from 'jsonwebtoken';
 import { BadRequestError } from "../../common";
 
@@ -14,7 +14,10 @@ router.post('/api/auth/signup', async (req: Request, res: Response, next: NextFu
     if(user){
         return  next(new BadRequestError('User already exists'));
     }
-    const newUser = new User({ email, password });
+    const newUser = User.build({ 
+        email, 
+        password 
+    });
     await newUser.save();
 
     req.session = { jwt: jwt.sign({

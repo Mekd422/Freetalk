@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken'
 declare global{
     interface jwtPayload{
         email:String,
-        password: String
+        userId: String
     }
 
     namespace Express{
