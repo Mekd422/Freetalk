@@ -15,6 +15,7 @@ import { signoutRouter } from '../routes/auth/signout';
 import { signupRouter } from '../routes/auth/signup';
 import { currentUser, requireAuth } from '../common';
 import { currentUserRouter } from '../routes/auth/current-user';
+import { errorHandler, NotFoundError } from '../common';
 
 
 dotenv.config();
@@ -50,24 +51,12 @@ app.use(requireAuth,newCommentRouter);
 app.use(requireAuth,deleteCommentRouter);
 
 app.all('*', (req, res, next) => {
-    const error = new Error("not found") as CustomError;
-    error.status = 404;
-    next(error);
+    next(new NotFoundError());
 });
 
-declare global{
-    interface CustomError extends Error{
-        status?: number;
-    }
-}
 
-app.use((err: CustomError, req: express.Request, res: express.Response, next: express.NextFunction) => {
-    if(err.status){
-        return res.status(err.status).send({ message: err.message });
-    }
 
-    res.status(500).send({ message: 'Something went wrong' });
-});
+app.use(errorHandler);
 
 const start = async () => {
     if (!process.env.MONGO_URI) {

@@ -1,24 +1,26 @@
 import { Router, Request, Response, NextFunction } from "express";
 import Post from "../../src/models/post";
 import Comment from "../../src/models/comment";
+import { BadRequestError } from "common";
 
 const router = Router();
 
-router.delete('/api/comments/:id', async (req: Request, res: Response, next: NextFunction) => {
-	const { id } = req.params;
+router.delete('/api/comments/:commentId/delete/:postId', async (req: Request, res: Response, next: NextFunction) => {
+	const { postId, commentId } = req.params;
+
+	if(!postId || !commentId){
+		return next(new BadRequestError('postId and commentId must be provided'));
+	}
 
 	try {
-		const comment = await Comment.findById(id);
-		if (!comment) return res.status(404).send({ error: 'Comment not found' });
-
-		// remove reference from any post
-		await Post.updateOne({ comments: id }, { $pull: { comments: id } });
-
-		await comment.deleteOne();
-		return res.status(204).send({});
-	} catch (err) {
-		return next(err);
+		await Comment.findOneAndDelete({_id: commentId});
+	} catch (error) {
+		next(new Error('Error deleting comment'));
 	}
+
+	await Post.findOneAndUpdate({_id: postId}, { $pull: { comments: commentId } });
+
+	res.status(200).json({success: true});
 });
 
 export { router as deleteCommentRouter };

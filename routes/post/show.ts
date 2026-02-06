@@ -3,18 +3,17 @@ import Post from "../../src/models/post";
 
 const router = Router();
 
-router.get('/api/post/:id', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/api/post/show/:id', async (req: Request, res: Response, next: NextFunction) => {
 	const { id } = req.params;
 
-	try {
-		const post = await Post.findById(id).populate('comments');
-		if (!post) {
-			return res.status(404).send({ error: 'Post not found' });
-		}
-		return res.status(200).send(post);
-	} catch (err) {
-		return next(err);
+	if(!id){
+		const allPosts = await Post.find();
+		return res.status(200).send(allPosts);
 	}
+
+	const post = await Post.findById(id).populate('comments');
+
+	res.status(200).send(post);
 });
 
 export { router as showPostRouter };

@@ -1,5 +1,6 @@
 import { Router, Request, Response, NextFunction } from "express";
 import Post from "../../src/models/post";
+import { BadRequestError } from "../../common";
 
 const router = Router();
 
@@ -7,16 +8,17 @@ router.post("/api/post/new", async (req: Request, res: Response, next: NextFunct
     const { title, content } = req.body;
 
     if (!title || !content) {
-        return res.status(400).send({ error: 'Title and content are required' });
+        return next(new BadRequestError('Title and content are required'));
     }
 
-    try {
-        const post = new Post({ title, content });
-        await post.save();
-        return res.status(201).send(post);
-    } catch (err) {
-        return next(err);
-    }
+    const newPost = new Post({
+        title,
+        content
+    });
+
+    await newPost.save();
+
+    res.status(201).send(newPost);
 });
 
 export { router as newPostRouter };
