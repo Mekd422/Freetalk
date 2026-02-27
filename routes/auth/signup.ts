@@ -1,11 +1,24 @@
 import { Router, Request, Response, NextFunction } from "express";
 import {User} from "../../src/models/user";
 import jwt from 'jsonwebtoken';
-import { BadRequestError } from "../../common";
+import { BadRequestError, validationRequest } from "../../common";
+import {body} from 'express-validator';
 
 const router = Router();
 
-router.post('/api/auth/signup', async (req: Request, res: Response, next: NextFunction) => {
+router.post('/api/auth/signup', [
+    body('email')
+    .not().isEmpty()
+    .isEmail()
+    .withMessage('Email must be valid'),
+
+
+    body('password')
+    .not().isEmpty()
+    .isLength({ min: 6 })
+    .withMessage('a valid password is required')
+
+], validationRequest,async (req: Request, res: Response, next: NextFunction) => {
     
     const { email, password } = req.body;
 
