@@ -1,0 +1,65 @@
+import express from 'express';
+import { json, urlencoded } from 'body-parser';
+import * as dotenv from 'dotenv';
+import cors from 'cors';
+import cookieSession from 'cookie-session';
+import { newPostRouter } from '../routes/post/new';
+import { showPostRouter } from '../routes/post/show';
+import { updatePostRouter } from '../routes/post/update';
+import { deletePostRouter } from '../routes/post/delete';
+import { newCommentRouter } from '../routes/comments/new';
+import { deleteCommentRouter } from '../routes/comments/delete';
+import { signinRouter } from '../routes/auth/signin';
+import { signoutRouter } from '../routes/auth/signout';
+import { signupRouter } from '../routes/auth/signup';
+import { currentUser, requireAuth } from '../common';
+import { currentUserRouter } from '../routes/auth/current-user';
+import { errorHandler, NotFoundError } from '../common';
+import { deleteImagesRouter } from '../routes/post/delete-images';
+import { addImagesRouter } from '../routes/post/add-images';
+
+
+dotenv.config();
+
+
+
+const app = express();
+app.use(cors({
+    origin: '*',
+    optionsSuccessStatus: 200
+}))
+app.set('trust proxy', true);
+app.use(urlencoded({ extended: false }));
+app.use(json());
+app.use(cookieSession({
+    signed: false,
+    secure: false,
+}));
+
+app.use(currentUser);
+
+app.use(signinRouter);
+app.use(signoutRouter);
+app.use(signupRouter);
+app.use(currentUserRouter);
+
+app.use(requireAuth,newPostRouter);
+app.use(showPostRouter);
+app.use(requireAuth,updatePostRouter);
+app.use(requireAuth,deletePostRouter);
+
+app.use(requireAuth,addImagesRouter);
+app.use(requireAuth,deleteImagesRouter);
+
+app.use(requireAuth,newCommentRouter);
+app.use(requireAuth,deleteCommentRouter);
+
+app.all('*', (req, res, next) => {
+    next(new NotFoundError());
+});
+
+
+
+app.use(errorHandler);
+
+export { app };
