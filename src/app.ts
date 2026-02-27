@@ -7,7 +7,7 @@ import { newPostRouter } from '../routes/post/new';
 import { showPostRouter } from '../routes/post/show';
 import { updatePostRouter } from '../routes/post/update';
 import { deletePostRouter } from '../routes/post/delete';
-import { newCommentRouter } from '../routes/comments/new';
+import { newCommentRouter } from "../routes/comments/new";
 import { deleteCommentRouter } from '../routes/comments/delete';
 import { signinRouter } from '../routes/auth/signin';
 import { signoutRouter } from '../routes/auth/signout';
@@ -54,8 +54,8 @@ app.use(requireAuth,deleteImagesRouter);
 app.use(requireAuth,newCommentRouter);
 app.use(requireAuth,deleteCommentRouter);
 
-app.all('*', (req, res, next) => {
-    next(new NotFoundError());
+app.use((req, res, next) => {
+  next(new NotFoundError());
 });
 
 

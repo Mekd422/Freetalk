@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction } from "express";
 import Post from "../../src/models/post";
 import Comment from "../../src/models/comment";
-import { BadRequestError } from "common";
+import { BadRequestError } from "../../common";
 
 const router = Router();
 

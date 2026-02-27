@@ -4,7 +4,16 @@
   "main": "main.js",
   "scripts": {
     "compile": "tsc && node ./dist/src/main.js",
-    "start": "nodemon -e ts --exec \"npm run compile\""
+    "start": "nodemon -e ts --exec \"npm run compile\"",
+    "jest-cli": "jest",
+    "test": "jest --watchAll --no-cache"
+  },
+  "jest":{
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "setupFilesAfterEnv": [
+      "./src/test/setup.ts"
+    ]
   },
   "keywords": [],
   "author": "",
